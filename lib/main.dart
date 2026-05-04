@@ -33,6 +33,28 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   double? _firstOperand;
   String? _operator;
   bool _waitingForSecondOperand = false;
+  bool _isDarkMode = false;
+
+  void _toggleTheme() {
+    setState(() {
+      _isDarkMode = !_isDarkMode;
+    });
+  }
+
+  Color get _scaffoldColor =>
+      _isDarkMode ? Colors.grey[900]! : Colors.white;
+
+  Color get _displayColor =>
+      _isDarkMode ? const Color(0xFF303030) : Colors.grey[200]!;
+
+  Color get _displayTextColor =>
+      _isDarkMode ? Colors.white : Colors.black;
+
+  Color get _numberButtonColor =>
+      _isDarkMode ? Colors.grey[700]! : Colors.grey[300]!;
+
+  Color get _numberButtonTextColor =>
+      _isDarkMode ? Colors.white : Colors.black;
 
   void _onNumberPressed(String digit) {
     setState(() {
@@ -93,8 +115,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
         padding: const EdgeInsets.all(4.0),
         child: ElevatedButton(
           style: ElevatedButton.styleFrom(
-            backgroundColor: color ?? Colors.grey[300],
-            foregroundColor: color != null ? Colors.white : Colors.black,
+            backgroundColor: color ?? _numberButtonColor,
+            foregroundColor: color != null ? Colors.white : _numberButtonTextColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
@@ -122,20 +144,42 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: _scaffoldColor,
       body: Column(
         children: [
           Expanded(
             flex: 2,
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(24),
-              alignment: Alignment.bottomRight,
-              color: Colors.grey[200],
-              child: Text(
-                _display,
-                style: const TextStyle(fontSize: 48, fontWeight: FontWeight.bold),
-                textAlign: TextAlign.right,
+              color: _displayColor,
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: 40,
+                    right: 8,
+                    child: IconButton(
+                      icon: Icon(
+                        _isDarkMode ? Icons.wb_sunny : Icons.nightlight_round,
+                        color: _displayTextColor,
+                      ),
+                      onPressed: _toggleTheme,
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 24,
+                    left: 24,
+                    right: 24,
+                    child: Text(
+                      _display,
+                      style: TextStyle(
+                        fontSize: 48,
+                        fontWeight: FontWeight.bold,
+                        color: _displayTextColor,
+                      ),
+                      textAlign: TextAlign.right,
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
